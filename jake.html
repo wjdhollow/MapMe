@@ -8,6 +8,7 @@
       <script src="javascript/underscore-min.js"></script>
       <script src="javascript/backbone-min.js"></script>
 
+
     </head>
 <script>
 $("document").ready(function() {
@@ -26,19 +27,9 @@ $("document").ready(function() {
 	   stalkerMode = stalkerMode.substr(1,6);
 	 }
 	}	
-
-
-
    });
   });
 
-</script>
-
-
-<script type="text/javascript"
-    src="http://maps.google.com/maps/api/js?sensor=false">
-</script>
-<script type="text/javascript">
   function initialize() {
     var position = new google.maps.LatLng(-34.397, 150.644);
     var myOptions = {
@@ -50,11 +41,7 @@ $("document").ready(function() {
         document.getElementById("map_canvas"),
         myOptions);
  
-    var marker = new google.maps.Marker({
-        position: position,
-        map: map,
-        title:"This is the place."
-    }); 
+
  
     var contentString = 'Hello <strong>World</strong>!';
     var infowindow = new google.maps.InfoWindow({
@@ -64,8 +51,37 @@ $("document").ready(function() {
     google.maps.event.addListener(marker, 'click', function() {
       infowindow.open(map,marker);
     });
- 
   }
+
+/////////
+
+  //function searchCallback(result, status) {
+	
+
+
+  //var 
+  //var service = new google.maps.places.PlacesService(mappymap);
+ // service.search(searchRequest,searchCallback);
+
+///////
+
+
+  var mappymap = document.getElementById("map_canvas");
+  window.myEvents = function() {
+    FB.api('/me/events', function(response) {
+      for(var i=0; i<response.data.length; i++) {
+		alert(response.data[i].name);
+	    var eventID = response.data[i].id;
+	    console.log(response.data[i].name + ': ' + eventID);
+	    FB.api(eventID, function(response) {
+		      console.log('event:' + response.owner.name);
+
+		  	alert(ya);
+		    }); 
+		   
+	     }
+      });
+  };
  
 </script>
 </head>

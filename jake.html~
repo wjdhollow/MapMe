@@ -8,6 +8,7 @@
       <script src="javascript/underscore-min.js"></script>
       <script src="javascript/backbone-min.js"></script>
 
+
     </head>
 <script>
 $("document").ready(function() {
@@ -26,13 +27,69 @@ $("document").ready(function() {
 	   stalkerMode = stalkerMode.substr(1,6);
 	 }
 	}	
-
-
-
    });
   });
 
+  function initialize() {
+    var position = new google.maps.LatLng(-34.397, 150.644);
+    var myOptions = {
+      zoom: 10,
+      center: position,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    var map = new google.maps.Map(
+        document.getElementById("map_canvas"),
+        myOptions);
+ 
+
+ 
+    var contentString = 'Hello <strong>World</strong>!';
+    var infowindow = new google.maps.InfoWindow({
+        content: contentString
+    });
+ 
+    google.maps.event.addListener(marker, 'click', function() {
+      infowindow.open(map,marker);
+    });
+  }
+
+/////////
+
+  //function searchCallback(result, status) {
+	
+
+
+  //var 
+  //var service = new google.maps.places.PlacesService(mappymap);
+ // service.search(searchRequest,searchCallback);
+
+///////
+
+
+  var mappymap = document.getElementById("map_canvas");
+  window.myEvents = function() {
+    FB.api('/me/events', function(response) {
+      for(var i=0; i<response.data.length; i++) {
+	    var eventID = response.data[i].id;
+	    console.log(response.data[i].name + ': ' + eventID);
+	    FB.api(eventID, function(response) {
+		      console.log('event:' + response.owner.name);
+
+			var addres = new Object();
+			address.name =  response.location;
+			var ya = geocoder.getLocations(address.name, getCallBackFor(address));
+		  	alert(ya);
+		    }); 
+		   
+	     }
+      });
+  };
+ 
 </script>
+</head>
+<body onload="initialize()">
+  <div id="map_canvas" style="width:500px; height:500px"></div>
+</body>
 
 
 

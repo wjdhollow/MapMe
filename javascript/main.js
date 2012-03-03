@@ -105,9 +105,9 @@ $(document).ready(function() {
 	};
 
 	// Outputs all of the user's events to the console.
-  window.myEvents = function() {
+       window.myEvents = function() {
 	   FB.api('/me/events', function(response) {
-      for(var i=0; i<response.data.length; i++) {
+            for(var i=0; i<response.data.length; i++) {
 		    var eventID = response.data[i].id;
 		    console.log(response.data[i].name + ': ' + eventID);
 		    FB.api(eventID, function(response) {
@@ -120,7 +120,7 @@ $(document).ready(function() {
 	// Outputs all the user's friend's events to the console
 	window.friendsEvents = function() {
 
-    FB.api('/me/friends', function(response) {
+       FB.api('/me/friends', function(response) {
       for(var i=0; i<response.data.length; i++) {
         friendId = response.data[i].id; 
         FB.api('/'+friendId+'/events', function(response) {
