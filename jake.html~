@@ -1,61 +1,47 @@
 <!DOCTYPE html>
 <html>
-    <head>
-      <title>My Facebook Login Page</title>
-      <script>
-        window.fbAsyncInit = function() {
-          FB.init({
-            appId      : '319369998112036',
-            status     : true, 
-            cookie     : true,
-            xfbml      : true,
-            oauth      : true,
-          });
-
-          // additional initialization code goes here
-          FB.login(function(response) {
-            if (response.authResponse) {
-              console.log('Welcome!  Fetching your information.... ');
-             
-      FB.api('/me/events', function(response) {
-        for(var i=0; i<response.data.length; i++) {
-	   console.log('My Events: ' + response.data[0].name);
-	}
-      });
-
-
-      FB.api('/me/friends', function(response) {
-        for(var i=0; i<response.data.length; i++) {
-          friendId = response.data[i].id; 
-          FB.api('/'+friendId+'/events', function(response) {
-             for(var i=0; i<response.data.length; i++) {
-		console.log('Friends Event: ' + response.data[0].name);
-	     }
-          });
-        } 
-      });
+  <head>
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+      <script src="javascript/main.js"></script>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map_canvas { height: 100% }
+    </style>
+    <script type="text/javascript"
+      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCMb8Wy6xCxn2GwbCMjTCYk9dgkFQM2rcY&sensor=true">
+    </script>
+    <script type="text/javascript">
+$(document).ready(function() {
+  $("#map").css({
+    height: 500,
+    width: 600
+  });
+  var myLatLng = new google.maps.LatLng(17.74033553, 83.25067267);
+  MYMAP.init('#map', myLatLng, 11);
+  $("#showmarkers").click(function(e){
+    MYMAP.placeMarkers('markers.xml');
+  });
+});
 
 
-
-
-
-
-
-            } else {
-              console.log('User cancelled login or did not fully authorize.');
-            }
-          });
-        };
-        (function(d){
-           var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
-           js = d.createElement('script'); js.id = id; js.async = true;
-           js.src = "//connect.facebook.net/en_US/all.js";
-           d.getElementsByTagName('head')[0].appendChild(js);
-         }(document));
-      </script>
-    </head>
-    <body>
+    </script>
+  </head>
       <div id="fb-root"></div>
-      <div class="fb-login-button" data-scope="publish_stream,create_event,user_events,friends_events,friends_about_me">Login with Facebook</div>
-    </body>
- </html>
+      <form>
+        <input type="button" value="Click me!" onclick="showName()" />
+      </form>
+      <form>
+        <input type="button" value="My Events!" onclick="myEvents()" />
+      </form>
+  <body onload="initialize()">
+    <div id="map_canvas" style="width:50%; height:50%"></div>
+<div>
+    <input id="address" type="textbox" value="Sydney, NSW">
+    <input type="button" value="Encode" onclick="codeAddress()">
+  </div>
+
+
+  </body>
+</html>
