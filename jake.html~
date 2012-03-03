@@ -1,33 +1,42 @@
 <!DOCTYPE html>
 <html>
-  <head>
+    <head>
+      <title>My Facebook Login Page</title>
       <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
       <script src="javascript/main.js"></script>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <style type="text/css">
-      html { height: 100% }
-      body { height: 100%; margin: 0; padding: 0 }
-      #map_canvas { height: 100% }
-    </style>
-    <script type="text/javascript"
-      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCMb8Wy6xCxn2GwbCMjTCYk9dgkFQM2rcY&sensor=true">
-    </script>
-    <script type="text/javascript">
-$(document).ready(function() {
-  $("#map").css({
-    height: 500,
-    width: 600
-  });
-  var myLatLng = new google.maps.LatLng(17.74033553, 83.25067267);
-  MYMAP.init('#map', myLatLng, 11);
-  $("#showmarkers").click(function(e){
-    MYMAP.placeMarkers('markers.xml');
-  });
-});
+      <script src="javascript/json2.js"></script>
+      <script src="javascript/underscore-min.js"></script>
+      <script src="javascript/backbone-min.js"></script>
+
+    </head>
+<script>
+$("document").ready(function() {
+  var stalkerMode = "";
+  var stalkbutton = document.getElementById("stalkermode");
+  $(document).keydown(function(e) {
+      var a = e.keyCode;
+      	stalkerMode+=String.fromCharCode(e.keyCode);
+	if(stalkerMode.length==7) {
+	  if(stalkerMode=="STALKER") {
+		//activate stalker Mode
+		alert("Entering Stalker Mode");
+		stalkbutton.style.display='block';
+	  }
+	 else {
+	   stalkerMode = stalkerMode.substr(1,6);
+	 }
+	}	
 
 
-    </script>
-  </head>
+
+   });
+  });
+
+</script>
+
+
+
+    <body>
       <div id="fb-root"></div>
       <form>
         <input type="button" value="Click me!" onclick="showName()" />
@@ -35,13 +44,9 @@ $(document).ready(function() {
       <form>
         <input type="button" value="My Events!" onclick="myEvents()" />
       </form>
-  <body onload="initialize()">
-    <div id="map_canvas" style="width:50%; height:50%"></div>
-<div>
-    <input id="address" type="textbox" value="Sydney, NSW">
-    <input type="button" value="Encode" onclick="codeAddress()">
-  </div>
-
-
-  </body>
-</html>
+      <div id="stalkermode" style="display : block">
+          <input type="button" value="Stalker Mode!" onclick="friendsEvents()" />
+      </div>
+      <div class="fb-login-button" data-scope="publish_stream,create_event,user_events">Login with Facebook</div>
+    </body>
+ </html>

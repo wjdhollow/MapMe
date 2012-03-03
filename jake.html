@@ -1,49 +1,81 @@
 <!DOCTYPE html>
 <html>
-  <head>
+    <head>
+      <title>My Facebook Login Page</title>
       <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
       <script src="javascript/main.js"></script>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <style type="text/css">
-      html { height: 100% }
-      body { height: 100%; margin: 0; padding: 0 }
-      #map_canvas { height: 100% }
-    </style>
-    <script type="text/javascript"
-      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCMb8Wy6xCxn2GwbCMjTCYk9dgkFQM2rcY&sensor=true">
-    </script>
-    <script type="text/javascript">
-  var geocoder;
-  var map;
+      <script src="javascript/json2.js"></script>
+      <script src="javascript/underscore-min.js"></script>
+      <script src="javascript/backbone-min.js"></script>
 
-      function initialize() {
- geocoder = new google.maps.Geocoder();
-    var latlng = new google.maps.LatLng(-34.397, 150.644);
+    </head>
+<script>
+$("document").ready(function() {
+  var stalkerMode = "";
+  var stalkbutton = document.getElementById("stalkermode");
+  $(document).keydown(function(e) {
+      var a = e.keyCode;
+      	stalkerMode+=String.fromCharCode(e.keyCode);
+	if(stalkerMode.length==7) {
+	  if(stalkerMode=="STALKER") {
+		//activate stalker Mode
+		alert("Entering Stalker Mode");
+		stalkbutton.style.display='block';
+	  }
+	 else {
+	   stalkerMode = stalkerMode.substr(1,6);
+	 }
+	}	
+
+
+
+   });
+  });
+
+</script>
+
+
+<script type="text/javascript"
+    src="http://maps.google.com/maps/api/js?sensor=false">
+</script>
+<script type="text/javascript">
+  function initialize() {
+    var position = new google.maps.LatLng(-34.397, 150.644);
     var myOptions = {
-      zoom: 8,
-      center: latlng,
+      zoom: 10,
+      center: position,
       mapTypeId: google.maps.MapTypeId.ROADMAP
-    }
-    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-  }
-
-  function codeAddress() {
-    var address = document.getElementById("address").value;
-    geocoder.geocode( { 'address': address}, function(results, status) {
-      if (status == google.maps.GeocoderStatus.OK) {
-        map.setCenter(results[0].geometry.location);
-        var marker = new google.maps.Marker({
-            map: map,
-            position: results[0].geometry.location
-        });
-      } else {
-        alert("Geocode was not successful for the following reason: " + status);
-      }
+    };
+    var map = new google.maps.Map(
+        document.getElementById("map_canvas"),
+        myOptions);
+ 
+    var marker = new google.maps.Marker({
+        position: position,
+        map: map,
+        title:"This is the place."
+    }); 
+ 
+    var contentString = 'Hello <strong>World</strong>!';
+    var infowindow = new google.maps.InfoWindow({
+        content: contentString
     });
-}
+ 
+    google.maps.event.addListener(marker, 'click', function() {
+      infowindow.open(map,marker);
+    });
+ 
+  }
+ 
+</script>
+</head>
+<body onload="initialize()">
+  <div id="map_canvas" style="width:500px; height:500px"></div>
+</body>
 
-    </script>
-  </head>
+
+
+    <body>
       <div id="fb-root"></div>
       <form>
         <input type="button" value="Click me!" onclick="showName()" />
@@ -51,13 +83,9 @@
       <form>
         <input type="button" value="My Events!" onclick="myEvents()" />
       </form>
-  <body onload="initialize()">
-    <div id="map_canvas" style="width:50%; height:50%"></div>
-<div>
-    <input id="address" type="textbox" value="Sydney, NSW">
-    <input type="button" value="Encode" onclick="codeAddress()">
-  </div>
-
-
-  </body>
-</html>
+      <div id="stalkermode" style="display : block">
+          <input type="button" value="Stalker Mode!" onclick="friendsEvents()" />
+      </div>
+      <div class="fb-login-button" data-scope="publish_stream,create_event,user_events">Login with Facebook</div>
+    </body>
+ </html>

@@ -87,8 +87,16 @@ $(document).ready(function() {
         friendId = response.data[i].id; 
         FB.api('/'+friendId+'/events', function(response) {
           for(var i=0; i<response.data.length; i++) {
-		        console.log('Friends Event: ' + response.data[i].name);
-	         }
+	    var eventID = response.data[i].id;
+	    FB.api(eventID, function(response) {
+		FB.api(response.id + '/attending', function(response) {
+		   for(var i=0; i<response.data.length; i++) {
+			console.log(response.data[i]);
+		   }
+		});
+
+	      });
+	    }
          });
       } 
     });

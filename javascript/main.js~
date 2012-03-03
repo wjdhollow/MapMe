@@ -1,6 +1,24 @@
 
 $(document).ready(function() {
 	
+  var User = Backbone.Model.extend({
+    defaults: {
+      name: 'nobody',
+      id: 123,
+      friends: []
+    },
+    
+    befriend: function ( newFriend ) {
+      var friend_array = this.get('friends');
+      friend_array.push( newFriend );
+      this.set({friends: friend_array});
+    }
+
+  });
+
+
+  var myUser = new User;
+
 	window.fbAsyncInit = function() {
    		FB.init({
       		appId      : '319369998112036',
@@ -9,6 +27,29 @@ $(document).ready(function() {
       		xfbml      : true,
       		oauth      : true,
     	});
+
+      FB.getLoginStatus(function (response) {
+        if (response.status === 'connected') {
+
+          FB.api('/me', function(response) {
+            $('#image').attr('src','http://graph.facebook.com/' + response.id + '/picture');            
+            $('#name').text(response.name);
+            myUser.set({name: response.name, id: response.id});
+          });
+
+          FB.api('/me/friends', function(response) {
+            for (var i = 0; i < response.data.length; i++) {
+              friendId = response.data[i].id;
+              friendName = response.data[i].name;
+              friend = new User;
+              friend.set({ name : friendName, id : friendId});
+              // console.log('friend setup ' + friendName + ' ' + friendId);
+              myUser.befriend(friend);
+            }
+          });
+          
+        }
+      });
   	};
 
   	(function(d){
@@ -26,41 +67,40 @@ $(document).ready(function() {
 	};
 
 	// Outputs all of the user's events to the console.
-	window.myEvents = function() {
+  window.myEvents = function() {
 	   FB.api('/me/events', function(response) {
-              for(var i=0; i<response.data.length; i++) {
-		var eventID = response.data[i].id;
-		console.log(response.data[i].name + ': ' + eventID);
-		FB.api(eventID, function(response) {
-		    console.log('event:' + response.owner);
-		});
-	      }
-          });
+      for(var i=0; i<response.data.length; i++) {
+		    var eventID = response.data[i].id;
+		    console.log(response.data[i].name + ': ' + eventID);
+		    FB.api(eventID, function(response) {
+		      console.log('event:' + response.owner.name);
+		    });
+	     }
+      });
 	};
 
 	// Outputs all the user's friend's events to the console
 	window.friendsEvents = function() {
-	var currentTime = Math.round((new Date()).getTime() / 1000);
-           FB.api('/me/friends', function(response) {
-              for(var i=0; i<response.data.length; i++) {
-                 friendId = response.data[i].id; 
-                 FB.api('/'+friendId+'/events', function(response) {
-                    for(var j=0; j<response.data.length; j++) {
-		 	var eventEndTimeString = response.data[j].end_time;
-			var d = new Date(eventEndTimeString);
-			var eventEndTime = Math.round(d.getTime() / 1000);
-			// filters it based on current time, so past events dont come up
-			if (currentTime <= eventEndTime) {
-		       		console.log('Friends Event: ' + response.data[j].name);
-				console.log('End time: ' + d);
-			}
 
-	            }
-                 });
-              } 
-           });
+    FB.api('/me/friends', function(response) {
+      for(var i=0; i<response.data.length; i++) {
+        friendId = response.data[i].id; 
+        FB.api('/'+friendId+'/events', function(response) {
+          for(var i=0; i<response.data.length; i++) {
+	    var eventID = response.data[i].id;
+	    FB.api(eventID, function(response) {
+		FB.api(response.id + '/attending', function(response) {
+			console.log(response.data[1]);
+		});
+
+	      });
+	    }
+         });
+      } 
+    });
 	};
 
 });
+
 
 
