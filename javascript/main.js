@@ -1,9 +1,159 @@
 
 $(document).ready(function() {
+
+
+
+
+    $(function(){
+            navigator.geolocation.getCurrentPosition(setLocation);
+            function setLocation(location){
+                    window.userLocation = location;
+                    window.map = new MapView;
+            }
+     
+            window.EventModel = Backbone.Model.extend({
+                   
+            });
+           
+            window.MapModel = Backbone.Model.extend({
+                   
+            });
+     
+            window.EventCollection = Backbone.Collection.extend({
+                    model: EventModel
+                   
+            });
+           
+            window.MapView = Backbone.View.extend({
+           
+                    initialize: function(){
+                            this.buildMap();
+                            var that = this;
+                            google.maps.event.addListener(this.autocomplete, 'place_changed', function () {
+                                    var place = that.autocomplete.getPlace();
+                                    if(place.id==undefined){
+                                            searchRequest = {
+                                                    bounds: that.map.getBounds(),
+                                                    keyword: that.input.value
+                                            };
+                                            function searchCallback(results, status) {
+                                                    if (status == google.maps.places.PlacesServiceStatus.OK) {
+                                                            for (var i = 0; i < results.length; i++) {
+                                                                    that.createMarker(results[i]);
+                                                            }
+                                                    }
+                                            }
+                                            that.service.search(searchRequest,searchCallback);
+                                    }
+                                    else{
+                                            if (place.geometry.viewport) {
+                                                    that.map.fitBounds(place.geometry.viewport);
+                                            }
+                                            else {
+                                                    that.map.setCenter(place.geometry.location);
+                                                    that.map.setZoom(17); // Why 17? Because it looks good.
+                                            }
+                                            var marker = that.createMarker(place);
+                                            
+                                            //_.extend(marker, Backbone.Events);
+                                            
+
+                                    }
+                            });
+                    },
+           
+                    render: function() {
+                      $(this.el).html(this.template(this.model.toJSON()));
+                      return this;
+                    },
+                    buildMap: function(){
+                            var mapOptions = {
+                                    center: new google.maps.LatLng(window.userLocation.coords.latitude, window.userLocation.coords.longitude),
+                                    zoom: 17,
+                                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                                    disableDoubleClickZoom: false
+                            };
+                            this.map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+                            this.input = document.getElementById('searchTextField');
+                            this.autocomplete = new google.maps.places.Autocomplete(this.input);
+                            this.service = new google.maps.places.PlacesService(this.map);
+                            this.autocomplete.bindTo('bounds', this.map);
+                    },
+                    createMarker: function (placeResult){
+                            var marker = new google.maps.Marker({
+                                    map: this.map
+                            });
+
+                            marker.setPosition(placeResult.geometry.location);
+                            var address = '';
+                            if (placeResult.address_components) {
+                                    address = [(placeResult.address_components[0] && placeResult.address_components[0].short_name || ''), (placeResult.address_components[1] && placeResult.address_components[1].short_name || ''), (placeResult.address_components[2] && placeResult.address_components[2].short_name || '')].join(' ');
+                            }
+                            var contentString = '<div><strong>' + placeResult.name + '</strong><br>' + address + '<br /><button class="newEvent" name="'+placeResult.name+'" id='+placeResult.reference+'>New Event</button>';
+                            var infowindow = new google.maps.InfoWindow({
+                              content: contentString
+                            });
+
+                            google.maps.event.addListener(marker, 'click', function(){
+                                    //this.map.setCenter(marker.getPosition());
+                                    infowindow.open(map,marker);
+                            });
+                            
+                            //this.createInfoWindow(placeResult, marker);
+                            //return marker;
+                    }
+                    /*
+                    createInfoWindow: function (place, marker){
+                            
+                            var infowindow = new google.maps.InfoWindow();
+                            var address = '';
+                            if (place.address_components) {
+                                    address = [(place.address_components[0] && place.address_components[0].short_name || ''), (place.address_components[1] && place.address_components[1].short_name || ''), (place.address_components[2] && place.address_components[2].short_name || '')].join(' ');
+                            }
+                            infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address + '<br /><button class="newEvent" name="'+place.name+'" id='+place.reference+'>New Event</button>');
+                            
+                            google.maps.event.addListener(marker, 'click', function(){
+                                    alert('click event on marker');
+                                    infowindow.open(map, marker);        
+                            });
+                            
+                            
+                            
+                    }
+                    */
+                   
+            });
+            
+            window.EventView = Backbone.View.extend({
+                   
+            });
+           
+            window.AppView = Backbone.View.extend({
+           
+            });
+     
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
-
-  var map;
-
 
   var User = Backbone.Model.extend({
     defaults: {
@@ -55,6 +205,8 @@ $(document).ready(function() {
       });
   	};
 
+  //navigator.geolocation.getCurrentPosition(setLocation);
+/*
   window.initialize= function() {
     var myLatlng = new google.maps.LatLng(-34.397, 150.644);
 
@@ -71,6 +223,13 @@ $(document).ready(function() {
     });
 
   };
+  */
+/*
+  function setLocation(location) {
+    var mylatlng = new google.maps.LatLng(location.coords.latitude,location.coords.longitude);
+    map.setCenter(mylatlng);
+    map.setZoom(17);
+  }
 
   function placeMarker(location) {
     var marker = new google.maps.Marker({
@@ -81,16 +240,19 @@ $(document).ready(function() {
     map.setCenter(location);
 
   }
-
+*/
     
   
 
   	(function(d){
+
+/*      
       var script = document.createElement("script");
       script.type = "text/javascript";
-      script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=initialize";
+      script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=initialize&libraries=places";
       document.body.appendChild(script);
-
+      
+*/
     	var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
     	js = d.createElement('script'); js.id = id; js.async = true;
     	js.src = "//connect.facebook.net/en_US/all.js";

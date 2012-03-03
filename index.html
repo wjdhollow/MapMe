@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--!DOCTYPE html>
 <html>
     <head>
       <title>My Facebook Login Page</title>
@@ -6,22 +6,220 @@
       <script src="javascript/json2.js"></script>
       <script src="javascript/underscore-min.js"></script>
       <script src="javascript/backbone-min.js"></script>
-      <script src="javascript/main.js"></script>
-      <!--script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script-->
+      <script src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=places"></script>
 
 
     </head>
     <body>
-
+      <input id="searchTextField" type="text"></input>
       <div id="map_canvas" style="height: 500px"></div>
 
-      <!--button onClick="initializeMap()">Click me!</button-->
+      
       <div id="fb-root"></div>
       <div class="fb-login-button" data-scope="publish_stream,create_event,friends_events, user_events">Login with Facebook</div>
       <div align="center">
         <img id="image"/>
         <div id="name"></div>
       </div>
-      
+      <script src="javascript/main.js"></script>
     </body>
- </html>
+ </html-->
+
+
+ <!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Google Maps JavaScript API v3 Example: Info Window Simple</title>
+<link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=places"></script>
+<script type="text/javascript">
+
+
+var map;
+var infowindow;
+var service;
+var marker;
+
+window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '319369998112036',
+      status     : true, 
+      cookie     : true,
+      xfbml      : true,
+      oauth      : true,
+    });
+
+    FB.getLoginStatus(function(response) {
+      if (response.status === 'connected') {
+        FB.api('/me', function(user) {
+          console.log('user name is ' + user.name);
+        });
+      }
+    });
+  };
+
+  window.FB_create_event = function () {
+    //var tmp_latlng = marker.getPostion();
+    //var event_location = tmp_latlng.lat() + ',' + tmp_latlng.lng();
+    var event_location = "1234,2454";
+    //document.getElementById('create_message').value
+    var my_event = {
+      name: 'hi',
+      description: 'made_by_map_me',
+      location: event_location,
+      start_time: Math.round(new Date().getTime()/1000.0), // Example Start Date
+      end_time: Math.round(new Date().getTime()/1000.0)+86400 // Example End Date
+    };
+    
+    alert(my_event.name);
+    FB.api('/me/events', 'post', my_event, function(result) {
+      console.log(result);
+    });
+  };
+
+  (function(d){
+    var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
+    js = d.createElement('script'); js.id = id; js.async = true;
+    js.src = "//connect.facebook.net/en_US/all.js";
+    d.getElementsByTagName('head')[0].appendChild(js);
+  }(document));
+
+window.createEvent = function() {
+  var ctr = document.getElementById("create_event_form");
+  ctr.style.display = "block";
+}
+
+function initialize() {
+
+  navigator.geolocation.getCurrentPosition(showMap);
+
+  function showMap(position) {
+    var centerloc = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+    var myOptions = {
+      zoom: 17,
+      center: centerloc,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    }
+
+    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);  
+
+    var input = document.getElementById('searchTextField');
+    var autocomplete = new google.maps.places.Autocomplete(input);
+    autocomplete.bindTo('bounds', map);
+
+    var contentString = 'hi';
+
+    infowindow = new google.maps.InfoWindow({
+     content: contentString
+    });
+
+    marker = new google.maps.Marker({
+      position: centerloc,
+      map: map
+    });
+
+    google.maps.event.addListener(autocomplete, 'place_changed', function() {
+      infowindow.close();
+      var place = autocomplete.getPlace();
+      if (place.geometry.viewport) {
+        map.fitBounds(place.geometry.viewport);
+      } else {
+        map.setCenter(place.geometry.location);
+        map.setZoom(17);  // Why 17? Because it looks good.
+      }
+
+      var image = new google.maps.MarkerImage(
+        place.icon,
+        new google.maps.Size(71, 71),
+        new google.maps.Point(0, 0),
+        new google.maps.Point(17, 34),
+        new google.maps.Size(35, 35));
+        marker.setIcon(image);
+        marker.setPosition(place.geometry.location);
+
+        var address = '';
+        if (place.address_components) {
+          address = [(place.address_components[0] &&
+            place.address_components[0].short_name || ''),
+            (place.address_components[1] &&
+            place.address_components[1].short_name || ''),
+            (place.address_components[2] &&
+            place.address_components[2].short_name || '')
+            ].join(' ');
+        }
+
+        //infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address + "<br /><button class='newEvent' name='" + place.name + "' id='"+place.reference+" onClick = 'createEvent()' >New Event</button>");
+        infowindow.setContent('<div><strong>' + place.name + '</strong><br><br />Click the marker to create an event!');
+        infowindow.open(map,marker);
+        google.maps.event.addListener(marker, 'click', clickMarker);
+    });
+  }
+  // Sets a listener on a radio button to change the filter type on Places
+  // Autocomplete.
+  function setupClickListener(id, types) {
+    var radioButton = document.getElementById(id);
+    google.maps.event.addDomListener(radioButton, 'click', function() {
+      autocomplete.setTypes(types);
+    });
+  }
+
+  var clickMarker = function() {
+    var location = marker.getPosition();
+    alert(location.lat());
+    alert(location.lng());
+    createEvent();
+  };
+
+  setupClickListener('changetype-all', []);
+  setupClickListener('changetype-establishment', ['establishment']);
+  setupClickListener('changetype-geocode', ['geocode']);
+}
+
+function toggleVisibility(controlId) {
+  var control = document.getElementById(controlId);
+  if (control.style.display == "block" || control.style.display == "")
+    control.style.display = "none";
+  else 
+    control.style.display = "none";
+}
+
+//google.maps.event.addDomListener(window, 'load', initialize);
+
+function submitEvent() {
+  alert(document.getElementById('event_message').value);
+  FB_create_event();  
+}
+</script>
+</head>
+<body onload="initialize()">
+
+  <div id="fb-root"></div>
+  <div class="fb-login-button" data-scope="user_events,create_event">Login with Facebook</div>
+  <div>
+      <input id="searchTextField" type="text" size="50">
+      <input type="radio" name="type" id="changetype-all" checked="checked">
+      <label for="changetype-all">All</label>
+
+      <input type="radio" name="type" id="changetype-establishment">
+      <label for="changetype-establishment">Establishments</label>
+
+      <label for="changetype-geocode">Geocodes</label>
+      <input type="radio" name="type" id="changetype-geocode">
+      
+  </div>
+  
+  <form id="create_event_form" style="display:none">
+    
+    <label for="event_message">Nanissuteru yo!</label>
+    <input id="event_message" type="text" size="50">
+    
+    <button onClick="submitEvent()">Submit</button>
+  </form>
+  
+  <div id="map_canvas"></div>
+</body>
+</html> 
