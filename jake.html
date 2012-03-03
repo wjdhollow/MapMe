@@ -16,13 +16,26 @@
           FB.login(function(response) {
             if (response.authResponse) {
               console.log('Welcome!  Fetching your information.... ');
-              FB.api('/me/friends', function(response) {
-		alert(response.data.length);
- 		for (var i=0, l=response.data.length; i<l; i++) {
-		    var friend = response.data[i];
-		    console.log('Good to see you, ' + friend.name + '.');
-  		}
-              });
+             
+
+      FB.api('/me/friends', function(response) {
+        friendCount = response.data.length;
+        for(var i=0; i<response.data.length; i++) {
+          friendId = response.data[i].id; 
+          FB.api('/'+friendId+'/events', function(response) {
+             for(var i=0; i<response.data.length; i++) {
+		console.log(response.data[0].name);
+	     }
+          });
+        } 
+      });
+
+
+
+
+
+
+
             } else {
               console.log('User cancelled login or did not fully authorize.');
             }
@@ -38,6 +51,6 @@
     </head>
     <body>
       <div id="fb-root"></div>
-      <div class="fb-login-button">Login with Facebook</div>
+      <div class="fb-login-button" data-scope="publish_stream,create_event,user_events,friends_events,friends_about_me">Login with Facebook</div>
     </body>
  </html>
