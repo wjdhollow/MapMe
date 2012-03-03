@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
 	
-  User = Backbone.Model.extend({
+  var User = Backbone.Model.extend({
     defaults: {
       name: 'nobody',
       id: 123,
@@ -10,12 +10,12 @@ $(document).ready(function() {
     
     befriend: function ( newFriend ) {
       var friend_array = this.get('friends');
-      console.log('befriending ' + newFriend.get('name'));
       friend_array.push( newFriend );
       this.set({friends: friend_array});
     }
 
   });
+
 
   var myUser = new User;
 
@@ -67,16 +67,16 @@ $(document).ready(function() {
 	};
 
 	// Outputs all of the user's events to the console.
-	window.myEvents = function() {
+  window.myEvents = function() {
 	   FB.api('/me/events', function(response) {
-              for(var i=0; i<response.data.length; i++) {
-		var eventID = response.data[i].id;
-		console.log(response.data[i].name + ': ' + eventID);
-		FB.api(eventID, function(response) {
-		    console.log('event:' + response.owner.name);
-		});
-	      }
-          });
+      for(var i=0; i<response.data.length; i++) {
+		    var eventID = response.data[i].id;
+		    console.log(response.data[i].name + ': ' + eventID);
+		    FB.api(eventID, function(response) {
+		      console.log('event:' + response.owner.name);
+		    });
+	     }
+      });
 	};
 
 	// Outputs all the user's friend's events to the console
