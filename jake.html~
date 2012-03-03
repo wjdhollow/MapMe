@@ -16,10 +16,10 @@
           FB.login(function(response) {
             if (response.authResponse) {
               console.log('Welcome!  Fetching your information.... ');
-              FB.api('/me/friends', function(response) {
+              FB.api('/me/events', function(response) {
 		alert(response.data.length);
  		for (var i=0, l=response.data.length; i<l; i++) {
-		    var friend = response[i];
+		    var friend = response.data[i];
 		    console.log('Good to see you, ' + friend.name + '.');
   		}
               });
@@ -38,6 +38,6 @@
     </head>
     <body>
       <div id="fb-root"></div>
-      <div class="fb-login-button">Login with Facebook</div>
+      <div class="fb-login-button" data-scope="publish_stream,create_event,user_events,friends_events">Login with Facebook</div>
     </body>
  </html>
