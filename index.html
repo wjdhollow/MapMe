@@ -3,11 +3,13 @@
     <head>
       <title>My Facebook Login Page</title>
       <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-      <script src="javacsript/main.js"></script>
-      <script src="javascript/facebook.js"></script>
+      <script src="javascript/main.js"></script>
     </head>
     <body>
       <div id="fb-root"></div>
+      <form>
+        <input type="button" value="Click me!" onclick="showName()" />
+      </form>
       <div class="fb-login-button" data-scope="publish_stream,create_event">Login with Facebook</div>
     </body>
  </html>
