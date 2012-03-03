@@ -25,7 +25,7 @@ $(document).ready(function() {
    		});
 	};
 
-	// Outputs all of the user's events to the console.
+
 	window.myEvents = function() {
 	   FB.api('/me/events', function(response) {
               for(var i=0; i<response.data.length; i++) {
@@ -34,7 +34,6 @@ $(document).ready(function() {
           });
 	};
 
-	// Outputs all the user's friend's events to the console
 	window.friendsEvents = function() {
            FB.api('/me/friends', function(response) {
               for(var i=0; i<response.data.length; i++) {

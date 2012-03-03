@@ -2,67 +2,14 @@
 <html>
     <head>
       <title>My Facebook Login Page</title>
-      <script>
-        window.fbAsyncInit = function() {
-          FB.init({
-            appId      : '319369998112036',
-            status     : true, 
-            cookie     : true,
-            xfbml      : true,
-            oauth      : true,
-          });
-
-          // additional initialization code goes here
-          FB.login(function(response) {
-            if (response.authResponse) {
-
-
-              console.log('Welcome!  Fetching your information.... ');
-              FB.api('/me', function(response) {
-                console.log('Good to see you, ' + response.name + '.');
-              });
-              /*
-              var body = 'Reading JS SDK documentation';
-              FB.api('/me/feed', 'post', { message: body }, function(response) {
-                if (!response || response.error) {
-                  alert('Error occured');
-                } else {
-                  alert('Post ID: ' + response.id);
-                }
-              });
-              */
-              var event = {
-                name: 'derp',
-                              //Times are strings containing an ISO-8601 formatted date/time or a UNIX timestamp; if it contains a time zone (not recommended), it will be converted to Pacific time before being stored and displayed
-                description: 'Description of your event',
-                location: 'Location of event',                        
-                start_time: Math.round(new Date().getTime()/1000.0), // Example Start Date
-                end_time: Math.round(new Date().getTime()/1000.0)+86400 // Example End Date
-              };
-
-              FB.api('/me/events', 'post', event, function(response) {
-                if (!response || response.error) {
-                  alert('Error occured');
-                } else {
-                  alert('Event ID: ' + response.id);
-                }
-              });
-
-            } else {
-              console.log('User cancelled login or did not fully authorize.');
-            }
-          });
-        };
-        (function(d){
-           var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
-           js = d.createElement('script'); js.id = id; js.async = true;
-           js.src = "//connect.facebook.net/en_US/all.js";
-           d.getElementsByTagName('head')[0].appendChild(js);
-         }(document));
-      </script>
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+      <script src="javascript/main.js"></script>
     </head>
     <body>
       <div id="fb-root"></div>
+      <form>
+        <input type="button" value="Click me!" onclick="showName()" />
+      </form>
       <div class="fb-login-button" data-scope="publish_stream,create_event">Login with Facebook</div>
     </body>
  </html>

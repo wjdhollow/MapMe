@@ -17,13 +17,20 @@
             if (response.authResponse) {
               console.log('Welcome!  Fetching your information.... ');
              
+      FB.api('/me/events', function(response) {
+        for(var i=0; i<response.data.length; i++) {
+	   console.log('My Events: ' + response.data[0].name);
+	}
+      });
+
 
       FB.api('/me/friends', function(response) {
-        friendCount = response.data.length;
-        for( i=0; i<response.data.length; i++) {
-          friendId = response.data[i].id;
+        for(var i=0; i<response.data.length; i++) {
+          friendId = response.data[i].id; 
           FB.api('/'+friendId+'/events', function(response) {
-		console.log(response.data[0].name);
+             for(var i=0; i<response.data.length; i++) {
+		console.log('Friends Event: ' + response.data[0].name);
+	     }
           });
         } 
       });
