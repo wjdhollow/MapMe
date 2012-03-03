@@ -29,29 +29,32 @@ $(document).ready(function() {
 	window.myEvents = function() {
 	   FB.api('/me/events', function(response) {
               for(var i=0; i<response.data.length; i++) {
-		console.log("-------------EVENT------------");
-	         console.log('id: ' + response.data[i].id);
-	         console.log('owner: ' + response.data[i].owner);
-	         console.log('name: ' + response.data[i].name);
-	         console.log('description: ' + response.data[i].description);
-	         console.log('start_time: ' + response.data[i].start_time);
-	         console.log('end_time: ' + response.data[i].end_time);
-	         console.log('location: ' + response.data[i].location);
-	         console.log('venue: ' + response.data[i].venue);
-	         console.log('privacy: ' + response.data[i].privacy);
-	         console.log('updated_time: ' + response.data[i].updated_time);
+		var eventID = response.data[i].id;
+		console.log(response.data[i].name + ': ' + eventID);
+		FB.api(eventID, function(response) {
+		    console.log('event:' + response.owner.name);
+		});
 	      }
           });
 	};
 
 	// Outputs all the user's friend's events to the console
 	window.friendsEvents = function() {
+	var currentTime = Math.round((new Date()).getTime() / 1000);
            FB.api('/me/friends', function(response) {
               for(var i=0; i<response.data.length; i++) {
                  friendId = response.data[i].id; 
                  FB.api('/'+friendId+'/events', function(response) {
-                    for(var i=0; i<response.data.length; i++) {
-		       console.log(response.data[i].description + ': ' + response.data[i].name);
+                    for(var j=0; j<response.data.length; j++) {
+		 	var eventEndTimeString = response.data[j].end_time;
+			var d = new Date(eventEndTimeString);
+			var eventEndTime = Math.round(d.getTime() / 1000);
+			// filters it based on current time, so past events dont come up
+			if (currentTime <= eventEndTime) {
+		       		console.log('Friends Event: ' + response.data[j].name);
+				console.log('End time: ' + d);
+			}
+
 	            }
                  });
               } 
