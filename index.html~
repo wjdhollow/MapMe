@@ -10,6 +10,12 @@
       <form>
         <input type="button" value="Click me!" onclick="showName()" />
       </form>
+      <form>
+        <input type="button" value="My Events!" onclick="myEvents()" />
+      </form>
+      <form>
+        <input type="button" value="Friend's Events!" onclick="friendsEvents()" />
+      </form>
       <div class="fb-login-button" data-scope="publish_stream,create_event">Login with Facebook</div>
     </body>
  </html>

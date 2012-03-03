@@ -1,61 +1,63 @@
 <!DOCTYPE html>
 <html>
-    <head>
-      <title>My Facebook Login Page</title>
-      <script>
-        window.fbAsyncInit = function() {
-          FB.init({
-            appId      : '319369998112036',
-            status     : true, 
-            cookie     : true,
-            xfbml      : true,
-            oauth      : true,
-          });
+  <head>
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+      <script src="javascript/main.js"></script>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map_canvas { height: 100% }
+    </style>
+    <script type="text/javascript"
+      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCMb8Wy6xCxn2GwbCMjTCYk9dgkFQM2rcY&sensor=true">
+    </script>
+    <script type="text/javascript">
+  var geocoder;
+  var map;
 
-          // additional initialization code goes here
-          FB.login(function(response) {
-            if (response.authResponse) {
-              console.log('Welcome!  Fetching your information.... ');
-             
-      FB.api('/me/events', function(response) {
-        for(var i=0; i<response.data.length; i++) {
-	   console.log('My Events: ' + response.data[i].name);
-	}
-      });
+      function initialize() {
+ geocoder = new google.maps.Geocoder();
+    var latlng = new google.maps.LatLng(-34.397, 150.644);
+    var myOptions = {
+      zoom: 8,
+      center: latlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    }
+    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+  }
 
+  function codeAddress() {
+    var address = document.getElementById("address").value;
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        map.setCenter(results[0].geometry.location);
+        var marker = new google.maps.Marker({
+            map: map,
+            position: results[0].geometry.location
+        });
+      } else {
+        alert("Geocode was not successful for the following reason: " + status);
+      }
+    });
+}
 
-      FB.api('/me/friends', function(response) {
-        for(var i=0; i<response.data.length; i++) {
-          friendId = response.data[i].id; 
-          FB.api('/'+friendId+'/events', function(response) {
-             for(var i=0; i<response.data.length; i++) {
-		console.log('Friends Event: ' + response.data[i].name);
-	     }
-          });
-        } 
-      });
-
-
-
-
-
-
-
-            } else {
-              console.log('User cancelled login or did not fully authorize.');
-            }
-          });
-        };
-        (function(d){
-           var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
-           js = d.createElement('script'); js.id = id; js.async = true;
-           js.src = "//connect.facebook.net/en_US/all.js";
-           d.getElementsByTagName('head')[0].appendChild(js);
-         }(document));
-      </script>
-    </head>
-    <body>
+    </script>
+  </head>
       <div id="fb-root"></div>
-      <div class="fb-login-button" data-scope="publish_stream,create_event,user_events,friends_events,friends_about_me">Login with Facebook</div>
-    </body>
- </html>
+      <form>
+        <input type="button" value="Click me!" onclick="showName()" />
+      </form>
+      <form>
+        <input type="button" value="My Events!" onclick="myEvents()" />
+      </form>
+  <body onload="initialize()">
+    <div id="map_canvas" style="width:50%; height:50%"></div>
+<div>
+    <input id="address" type="textbox" value="Sydney, NSW">
+    <input type="button" value="Encode" onclick="codeAddress()">
+  </div>
+
+
+  </body>
+</html>

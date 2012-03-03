@@ -70,13 +70,18 @@ $(document).ready(function() {
 	window.myEvents = function() {
 	   FB.api('/me/events', function(response) {
               for(var i=0; i<response.data.length; i++) {
-	         console.log('My Events: ' + response.data[i].name);
+		var eventID = response.data[i].id;
+		console.log(response.data[i].name + ': ' + eventID);
+		FB.api(eventID, function(response) {
+		    console.log('event:' + response.owner.name);
+		});
 	      }
           });
 	};
 
 	// Outputs all the user's friend's events to the console
 	window.friendsEvents = function() {
+
     FB.api('/me/friends', function(response) {
       for(var i=0; i<response.data.length; i++) {
         friendId = response.data[i].id; 
@@ -88,7 +93,6 @@ $(document).ready(function() {
       } 
     });
 	};
-
 
 });
 
