@@ -2,9 +2,6 @@
 <html>
     <head>
       <title>My Facebook Login Page</title>
-    </head>
-    <body>
-      <div id="fb-root"></div>
       <script>
         window.fbAsyncInit = function() {
           FB.init({
@@ -14,6 +11,27 @@
             xfbml      : true,
             oauth      : true,
           });
+
+          // additional initialization code goes here
+          FB.getLoginStatus(function(response) {
+            if (response.status === 'connected') {
+              // the user is logged in and has authenticated your
+              // app, and response.authResponse supplies
+              // the user's ID, a valid access token, a signed
+              // request, and the time the access token 
+              // and signed request each expire
+              var uid = response.authResponse.userID;
+              var accessToken = response.authResponse.accessToken;
+              alert('connected and authorized');
+            } else if (response.status === 'not_authorized') {
+              // the user is logged in to Facebook, 
+              // but has not authenticated your app
+              alert('not authorized');
+            } else {
+              // the user isn't logged in to Facebook.
+              alert('not logged into facebook');
+            }
+          });
         };
         (function(d){
            var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
@@ -22,6 +40,9 @@
            d.getElementsByTagName('head')[0].appendChild(js);
          }(document));
       </script>
+    </head>
+    <body>
+      <div id="fb-root"></div>
       <div class="fb-login-button">Login with Facebook</div>
     </body>
  </html>
