@@ -13,6 +13,23 @@
   if ($facebook->getSession())
   {
     $user = $facebook->getUser();
+  
+
+    $uid = $facebook->getUser(); // get the UID of the current user
+    $me = $facebook->api('/me/friends'); // access all the information of friends
+    echo "Total friends".sizeof($me['data'])."";
+
+    echo " friends collage ";
+
+    foreach ($me['data'] as $frns)
+    {
+      // Display the picture of friends one by one
+      echo "";
+    }
+
+    echo "
+
+    By ";
   }
   else
   {
@@ -22,18 +39,4 @@
     echo '';
   }
 
-  $uid = $facebook->getUser(); // get the UID of the current user
-  $me = $facebook->api('/me/friends'); // access all the information of friends
-
-  echo " friends collage "
-
-  foreach($me['data'] as $frns)
-  {
-    // Display the picture of friends one by one
-    echo "";
-  }
-
 ?>
-<!DOCTYPE html>
-<html>
-</html>
