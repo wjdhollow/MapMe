@@ -1,6 +1,10 @@
 
 $(document).ready(function() {
-	
+  
+
+  var map;
+
+
   var User = Backbone.Model.extend({
     defaults: {
       name: 'nobody',
@@ -16,9 +20,8 @@ $(document).ready(function() {
 
   });
 
-
   var myUser = new User;
-
+  
 	window.fbAsyncInit = function() {
    		FB.init({
       		appId      : '319369998112036',
@@ -52,7 +55,42 @@ $(document).ready(function() {
       });
   	};
 
+  window.initialize= function() {
+    var myLatlng = new google.maps.LatLng(-34.397, 150.644);
+
+    var myOptions = {
+      zoom: 8,
+      center: myLatlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    }
+    
+    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+
+    google.maps.event.addListener(map, 'click', function(event) {
+      placeMarker(event.latLng);
+    });
+
+  };
+
+  function placeMarker(location) {
+    var marker = new google.maps.Marker({
+      position: location,
+      map: map
+    });
+
+    map.setCenter(location);
+
+  }
+
+    
+  
+
   	(function(d){
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=initialize";
+      document.body.appendChild(script);
+
     	var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
     	js = d.createElement('script'); js.id = id; js.async = true;
     	js.src = "//connect.facebook.net/en_US/all.js";
@@ -94,6 +132,31 @@ $(document).ready(function() {
     });
 	};
 
+/*  
+  window.initializeMap = function() {
+        var myOptions = {
+          center: new google.maps.LatLng(-34.397, 150.644),
+          zoom: 8,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById("map_canvas"),
+            myOptions);
+  }
+*/
+
+  /*
+  window.loadMap = function()  {
+    var latLong = new google.maps.LatLng(44.798609, -91.504912);
+
+    var mapOptions = {
+      zoom: 8,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      center: latLong
+    };
+
+    var map = new google.maps.Map($('#map_canvas'), mapOptions);
+  };
+  */
 });
 
 
