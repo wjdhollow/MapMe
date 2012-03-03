@@ -3,7 +3,11 @@
     <head>
       <title>My Facebook Login Page</title>
       <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+      <script src="javascript/json2.js"></script>
+      <script src="javascript/underscore-min.js"></script>
+      <script src="javascript/backbone-min.js"></script>
       <script src="javascript/main.js"></script>
+
     </head>
     <body>
       <div id="fb-root"></div>
@@ -16,6 +20,6 @@
       <form>
         <input type="button" value="Friend's Events!" onclick="friendsEvents()" />
       </form>
-      <div class="fb-login-button" data-scope="publish_stream,create_event">Login with Facebook</div>
+      <div class="fb-login-button" data-scope="publish_stream,create_event,friends_events, user_events">Login with Facebook</div>
     </body>
  </html>
